@@ -178,7 +178,7 @@ export interface SiteSettings {
     // ── Brain Visualization ─────────────────────────────────────────────────
     brainSymbols: string[];      // Layer 1 tokens (math symbols)
     brainEquations: string[];    // Layer 2 tokens (equations)
-    brainDensity: number;        // 0.5–2.0 multiplier on base particle count
+    brainDensity: number;        // 2000–6000 particle count
     brainZoomDepth: number;      // 1.0–3.0 scroll wheel zoom sensitivity
     glitchIntensity: number;     // 0.0–1.0 glitch micro-displacement intensity
     pulseFrequency: number;      // pulses per second (e.g. 0.25 = one every 4s)
@@ -245,7 +245,7 @@ export const defaultSiteSettings: SiteSettings = {
     ],
     brainSymbols: ["\u2211", "\u2202", "\u222b", "\u03c0", "\u03bb", "\u03c3", "\u0394", "\u2207", "\u03b5", "\u03bc", "\u03b8", "\u221e", "\u2248", "\u2295", "\u2208"],
     brainEquations: ["x(t)", "\u2207f(x)", "P(A|B)", "\u2211w\u1d62x\u1d62", "e^{i\u03c0}", "\u03c3(z)", "\u2202L/\u2202w", "E[X]", "H(X)", "D_KL", "relu", "tanh", "\u2016x\u20162", "argmax"],
-    brainDensity: 1.0,
+    brainDensity: 5000,
     brainZoomDepth: 1.5,
     glitchIntensity: 0.5,
     pulseFrequency: 0.25,
