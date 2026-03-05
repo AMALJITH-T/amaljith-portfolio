@@ -1,0 +1,10 @@
+{
+  "heroScientificImageUrl": "",
+  "heroScientificImageOpacity": 0.85,
+  "heroScientificImageParallax": 30,
+  "heroVisualOpacity": 0.75,
+  "signalPortraitOffsetY": 80,
+  "signalPortraitScale": 1.1,
+  "signalPortraitRingGlow": 0.3,
+  "goldenLineSpeed": 0.7
+}

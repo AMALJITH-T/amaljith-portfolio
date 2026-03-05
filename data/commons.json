@@ -1,0 +1,41 @@
+{
+  "status": "active",
+  "threads": [
+    {
+      "id": "1772696356604-l9z7f",
+      "title": "<script>alert(1)</script>",
+      "content": "<svg/onload=alert(1)>",
+      "author": "javascript:alert(1)",
+      "timestamp": "2026-03-05T07:39:16.604Z",
+      "pinned": false,
+      "locked": false,
+      "archived": false,
+      "flagged": false,
+      "replies": []
+    },
+    {
+      "id": "1772533551776-inlx8",
+      "title": "AI in biosignal modelling",
+      "content": "What dimensionality reduction methods work best for non-stationary physiological time-series?",
+      "author": "researcher",
+      "timestamp": "2026-03-03T10:25:51.776Z",
+      "pinned": false,
+      "locked": false,
+      "archived": false,
+      "flagged": false,
+      "replies": []
+    },
+    {
+      "id": "1772531612863-92tzd",
+      "title": "Manifold learning in biosignals",
+      "content": "Wondering if UMAP or t-SNE are useful for physiological time-series dimensionality reduction. Any thoughts on temporal structure preservation?",
+      "author": "curious",
+      "timestamp": "2026-03-03T09:53:32.863Z",
+      "pinned": false,
+      "locked": false,
+      "archived": false,
+      "flagged": false,
+      "replies": []
+    }
+  ]
+}

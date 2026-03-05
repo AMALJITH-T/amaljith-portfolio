@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+:root {
+  --bg-primary: #050505;
+  --bg-secondary: #0a0a0a;
+  --bg-card: #0f0f0f;
+  --accent-gold: #c29b27;
+  --accent-brass: #c5a059;
+  --accent-silver: #a1a1aa;
+  --text-primary: #ededed;
+  --text-muted: #a1a1aa;
+  --text-dim: #525252;
+  --border: #1a1a1a;
+  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Base Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+  /* Lenis handles smooth scroll */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── Typography Scale ── */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--accent-gold);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+/* ── Gold Divider ── */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(90deg,
+      transparent,
+      var(--accent-gold),
+      transparent);
+  opacity: 0.35;
+}
+
+/* ── Section Padding ── */
+/* Match hero's clamp so inner-page content left-edge aligns with hero text */
+.section {
+  padding-block: clamp(5rem, 10vw, 9rem);
+  padding-inline: clamp(1.5rem, 4vw, 4.5rem);
+}
+
+/* ── Monospace year labels ── */
+.mono {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-gold);
+}
+
+/* ── Atmospheric gold glow — used on focal elements ── */
+/* Extremely low opacity, large spread — feels atmospheric not visible */
+.glow-gold {
+  filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.18));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATION SYSTEM — Living Mindspace
+   All animations are GPU-safe (translate/opacity only).
+   Wrapped in prefers-reduced-motion: no-preference for full accessibility.
+════════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── 1. Golden Thought Trails ───────────────────────────────────────────── */
+  /* Three thin golden streaks drifting diagonally — ideas traveling through space */
+
+  @keyframes thought-drift-a {
+    0% {
+      transform: translateX(-115%) rotate(-8deg);
+      opacity: 0;
+    }
+
+    8% {
+      opacity: 0.09;
+    }
+
+    92% {
+      opacity: 0.07;
+    }
+
+    100% {
+      transform: translateX(125%) rotate(-8deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes thought-drift-b {
+    0% {
+      transform: translateX(120%) rotate(11deg);
+      opacity: 0;
+    }
+
+    8% {
+      opacity: 0.07;
+    }
+
+    92% {
+      opacity: 0.06;
+    }
+
+    100% {
+      transform: translateX(-120%) rotate(11deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes thought-drift-c {
+    0% {
+      transform: translateX(-110%) rotate(-3deg);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.06;
+    }
+
+    90% {
+      opacity: 0.05;
+    }
+
+    100% {
+      transform: translateX(115%) rotate(-3deg);
+      opacity: 0;
+    }
+  }
+
+  .thought-trail {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(201, 166, 70, 0.6) 35%,
+        rgba(212, 175, 55, 0.9) 50%,
+        rgba(201, 166, 70, 0.6) 65%,
+        transparent 100%);
+    filter: blur(0.3px);
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  .thought-trail-a {
+    top: 32%;
+    left: 15%;
+    width: 62%;
+    animation: thought-drift-a 21s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .thought-trail-b {
+    top: 64%;
+    left: 5%;
+    width: 55%;
+    animation: thought-drift-b 29s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation-delay: -10s;
+  }
+
+  .thought-trail-c {
+    top: 14%;
+    left: 25%;
+    width: 48%;
+    animation: thought-drift-c 25s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation-delay: -6s;
+  }
+
+  /* ── 2. Living Scientific Visual ─────────────────────────────────────────── */
+  /* Streamline signal travel — a dash sweeping along the principal geodesic */
+
+  @keyframes sci-stream {
+    0% {
+      stroke-dashoffset: 400;
+    }
+
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Node dots breathe — spontaneous cognitive activation */
+  @keyframes sci-node-breathe {
+
+    0%,
+    100% {
+      opacity: 0.28;
+    }
+
+    50% {
+      opacity: 0.50;
+    }
+  }
+
+  /* Whole visual container: scale breathe (0.995→1→0.995) + very slow opacity */
+  @keyframes sci-field-breathe {
+
+    0%,
+    100% {
+      opacity: 0.40;
+      transform: scale(0.995);
+    }
+
+    50% {
+      opacity: 0.48;
+      transform: scale(1);
+    }
+  }
+
+  .sci-visual-container {
+    animation: sci-field-breathe 15s ease-in-out infinite;
+  }
+
+  .sci-streamline {
+    stroke-dasharray: 60 340;
+    animation: sci-stream 10s linear infinite;
+  }
+
+  .sci-node {
+    animation: sci-node-breathe 5s ease-in-out infinite;
+  }
+
+  /* Stagger node breathe so they don't all pulse together */
+  .sci-node:nth-child(3n+1) {
+    animation-delay: 0s;
+  }
+
+  .sci-node:nth-child(3n+2) {
+    animation-delay: -1.8s;
+  }
+
+  .sci-node:nth-child(3n) {
+    animation-delay: -3.6s;
+  }
+
+  /* ── 3. Geometry Grid Node Pulses ──────────────────────────────────────── */
+  /* Soft gold circles glowing irregularly — spontaneous insight moments */
+
+  @keyframes geo-pulse {
+
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(1);
+    }
+
+    40% {
+      opacity: 0.38;
+      transform: scale(1.5);
+    }
+
+    60% {
+      opacity: 0.30;
+      transform: scale(1.3);
+    }
+  }
+
+  .geo-pulse-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: geo-pulse 4s ease-in-out infinite;
+  }
+}
