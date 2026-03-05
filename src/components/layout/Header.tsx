@@ -68,7 +68,7 @@ export function Header() {
                 clickCount.current = 0;
                 if (resetTimer.current) clearTimeout(resetTimer.current);
                 e.preventDefault(); // override the "/" href
-                router.push("/admin");
+                router.push("/login");
                 return;
             }
 
@@ -82,7 +82,7 @@ export function Header() {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.shiftKey && e.key === "A") {
-                router.push("/admin");
+                router.push("/login");
             }
         };
         window.addEventListener("keydown", handleKeyDown);

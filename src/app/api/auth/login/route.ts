@@ -6,12 +6,8 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { password } = body;
 
-        // In a real application, use a strong hashed password or environment variable. 
-        // We're mimicking the prior insecure behavior of just needing "access", but moving it to a secure cookie.
-        const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
-
-        if (password !== adminPassword) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        if (!process.env.ADMIN_PASSWORD || password !== process.env.ADMIN_PASSWORD) {
+            return NextResponse.json({ error: "Invalid password" }, { status: 401 });
         }
 
         await createSession();
