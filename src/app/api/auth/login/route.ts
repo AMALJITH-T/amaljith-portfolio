@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { signToken } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
     try {
@@ -7,23 +8,23 @@ export async function POST(req: NextRequest) {
         const { password } = body;
 
         if (!process.env.ADMIN_PASSWORD || password !== process.env.ADMIN_PASSWORD) {
-            return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+            return new Response(JSON.stringify({ error: "Invalid password" }), { status: 401 });
         }
 
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const expiresAt = new Date(Date.now() + 6 * 60 * 60 * 1000);
         const session = await signToken({ admin: true, expiresAt });
 
-        const response = NextResponse.json({ success: true });
-        response.cookies.set("admin_session", session, {
+        const cookieStore = await cookies();
+        cookieStore.set("admin_session", session, {
             httpOnly: true,
             secure: true,
-            sameSite: "strict",
+            sameSite: "lax",
             path: "/",
-            expires: expiresAt,
+            maxAge: 60 * 60 * 6
         });
 
-        return response;
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
     } catch {
-        return NextResponse.json({ error: "Server error." }, { status: 500 });
+        return new Response(JSON.stringify({ error: "Server error." }), { status: 500 });
     }
 }
