@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { AdminLoginModal } from "@/components/admin/AdminLoginModal";
 
 // ── Admin unlock constants ─────────────────────────────────────────────────────
 const UNLOCK_CLICKS = 7;        // Required sequential clicks
@@ -23,6 +24,7 @@ export function Header() {
     const { scrollY } = useScroll();
     const pathname = usePathname();
     const router = useRouter();
+    const [showAdminModal, setShowAdminModal] = useState(false);
 
     // ── Admin unlock refs (no state — zero re-renders) ─────────────────────────
     const clickCount = useRef(0);
@@ -68,7 +70,7 @@ export function Header() {
                 clickCount.current = 0;
                 if (resetTimer.current) clearTimeout(resetTimer.current);
                 e.preventDefault(); // override the "/" href
-                router.push("/login");
+                setShowAdminModal(true);
                 return;
             }
 
@@ -82,7 +84,7 @@ export function Header() {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.shiftKey && e.key === "A") {
-                router.push("/login");
+                setShowAdminModal(true);
             }
         };
         window.addEventListener("keydown", handleKeyDown);
@@ -153,6 +155,9 @@ export function Header() {
                     </nav>
                 </div>
             </div>
+
+            {/* Admin Login Modal */}
+            <AdminLoginModal open={showAdminModal} onClose={() => setShowAdminModal(false)} />
         </motion.header>
     );
 }

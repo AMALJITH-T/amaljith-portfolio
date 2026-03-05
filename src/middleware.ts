@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 
-const protectedRoutes = ['/admin', '/api/site/settings', '/api/suggestions'];
+const protectedRoutes = ['/admin', '/api/site/settings', '/api/suggestions', '/api/admin'];
 
 export async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
