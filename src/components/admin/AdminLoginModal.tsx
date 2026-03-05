@@ -42,8 +42,7 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [open, onClose]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleLogin = async () => {
         setError(null);
         setLoading(true);
 
@@ -55,9 +54,9 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
             });
 
             if (res.ok) {
-                router.push("/admin");
+                window.location.href = "/admin";
             } else {
-                setError("Invalid admin password");
+                setError("Invalid password");
                 setPassword("");
                 inputRef.current?.focus();
             }
@@ -93,7 +92,7 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-6">
                     <div>
                         <input
                             ref={inputRef}
@@ -101,6 +100,9 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
                             placeholder="Admin password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") handleLogin();
+                            }}
                             disabled={loading}
                             className="w-full px-4 py-3 rounded bg-black border border-neutral-700 text-[0.9rem] text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:border-[var(--accent-gold)] transition-colors duration-400 disabled:opacity-50"
                         />
@@ -114,7 +116,7 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
 
                     <div className="flex justify-end">
                         <button
-                            type="submit"
+                            onClick={handleLogin}
                             disabled={loading || !password}
                             className="group flex items-center gap-2 font-sans text-[0.75rem] tracking-widest uppercase text-[var(--text-primary)] hover:text-[var(--accent-gold)] transition-colors duration-400 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
@@ -124,7 +126,7 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
                             Authenticate
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>,
         document.body
