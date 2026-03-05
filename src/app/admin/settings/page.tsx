@@ -6,6 +6,7 @@ import { SiteConfig, SiteSettings, defaultSiteSettings } from "@/lib/types";
 import { defaultSiteConfig } from "@/lib/data";
 import { LabFragmentsEditor } from "@/components/ui/LabFragments";
 import { ProjectsEditor } from "@/components/ui/ProjectsEditor";
+import { loadSiteConfig, loadSiteSettings } from "@/lib/settingsLoader";
 
 // ─── Shared Field Components ──────────────────────────────────────────────────
 function SliderRow({ label, value, min, max, step, onChange }: {
@@ -67,8 +68,8 @@ export default function SettingsAdminPage() {
 
     useEffect(() => {
         Promise.all([
-            fetch("/api/config").then((r) => r.json()),
-            fetch("/api/site/settings").then((r) => r.json()),
+            loadSiteConfig(),
+            loadSiteSettings(),
         ])
             .then(([cfg, ss]) => { setConfig(cfg); setSettings(ss); })
             .catch(() => { })
@@ -86,22 +87,12 @@ export default function SettingsAdminPage() {
     const handleSave = async () => {
         setSaving(true);
         try {
-            const [r1, r2] = await Promise.all([
-                // Visual config — existing /api/config route
-                fetch("/api/config", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(config),
-                }),
-                // Site settings — new /api/site/settings route
-                fetch("/api/site/settings", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json", "x-admin": "1" },
-                    body: JSON.stringify(settings),
-                }),
-            ]);
-            if (!r1.ok || !r2.ok) throw new Error();
-            showToast("success", "All settings saved.");
+            localStorage.setItem("site_config", JSON.stringify(config));
+            localStorage.setItem("site_settings", JSON.stringify(settings));
+            await new Promise(r => setTimeout(r, 400)); // UX delay
+            showToast("success", "All settings saved locally.");
+            // Force a reload of preview in current tab if needed, or let admin see.
+            // Since it's React state, current view is updated.
         } catch {
             showToast("error", "Save failed.");
         } finally {

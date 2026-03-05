@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Trash2 } from "lucide-react";
 import { LabFragment, SiteSettings, defaultSiteSettings } from "@/lib/types";
+import { loadSiteSettings } from "@/lib/settingsLoader";
 
 import { BehaviouralLandscapeViz, DecisionGraphViz, DrowsinessPipelineViz, ClinicalSurveillanceViz } from "@/components/ui/LabFragmentVisualizations";
 
@@ -75,8 +76,7 @@ export function LabFragments() {
     const [active, setActive] = useState<LabFragment | null>(null);
 
     useEffect(() => {
-        fetch("/api/site/settings")
-            .then((r) => r.json())
+        loadSiteSettings()
             .then((data: SiteSettings) => {
                 if (data.labFragments?.length) setFragments(data.labFragments);
             })

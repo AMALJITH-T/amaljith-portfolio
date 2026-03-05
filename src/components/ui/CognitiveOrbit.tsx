@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { defaultSiteSettings, SiteSettings } from "@/lib/types";
+import { loadSiteSettings } from "@/lib/settingsLoader";
 
 // Orbital parameters — unique ellipse per token slot
 const ORBITS = [
@@ -27,8 +28,7 @@ export function CognitiveOrbit() {
 
     // Fetch orbit keywords from site settings
     useEffect(() => {
-        fetch("/api/site/settings")
-            .then((r) => r.json())
+        loadSiteSettings()
             .then((data: SiteSettings) => {
                 if (data.orbitKeywords?.length) setKeywords(data.orbitKeywords);
             })

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Github, Linkedin, Mail } from "lucide-react";
 import { SiteSettings, defaultSiteSettings } from "@/lib/types";
+import { loadSiteSettings } from "@/lib/settingsLoader";
 
 import { motion } from "framer-motion";
 
@@ -11,8 +12,7 @@ export function Footer() {
     const [s, setS] = useState<SiteSettings>(defaultSiteSettings);
 
     useEffect(() => {
-        fetch("/api/site/settings")
-            .then((r) => r.json())
+        loadSiteSettings()
             .then((data: SiteSettings) => setS(data))
             .catch(() => { /* use default */ });
     }, []);
@@ -46,7 +46,7 @@ export function Footer() {
 
                 {/* 2. Standard Links */}
                 <div className="flex items-center justify-center gap-8 w-[100%] lg:w-1/3">
-                    <Link
+                    <a
                         href="https://github.com/AMALJITH-T"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -54,8 +54,8 @@ export function Footer() {
                         aria-label="GitHub"
                     >
                         <Github size={17} strokeWidth={1.5} className="group-hover:scale-110 transition-transform duration-300" />
-                    </Link>
-                    <Link
+                    </a>
+                    <a
                         href="https://www.linkedin.com/in/amaljith-thadathil/"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -63,14 +63,14 @@ export function Footer() {
                         aria-label="LinkedIn"
                     >
                         <Linkedin size={17} strokeWidth={1.5} className="group-hover:scale-110 transition-transform duration-300" />
-                    </Link>
-                    <Link
-                        href={s.contactEmail ? `mailto:${s.contactEmail}` : "/signal"}
+                    </a>
+                    <a
+                        href={s.contactEmail ? `mailto:${s.contactEmail}` : "mailto:amal2004t@gmail.com"}
                         className="text-[var(--text-dim)] hover:text-[var(--accent-gold)] transition-colors duration-400 group relative"
                         aria-label="Email"
                     >
                         <Mail size={17} strokeWidth={1.5} className="group-hover:scale-110 transition-transform duration-300" />
-                    </Link>
+                    </a>
                     <Link
                         href="/privacy"
                         className="text-[var(--text-dim)] hover:text-[var(--accent-gold)] transition-colors duration-400 mono text-xs uppercase tracking-widest"

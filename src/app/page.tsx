@@ -18,6 +18,7 @@ import { ArrowUpRight } from "lucide-react";
 import { SVGSignalTrace } from "@/components/ui/SVGSignalTrace";
 import { BackgroundScientificOverlay } from "@/components/ui/BackgroundScientificOverlay";
 import { BackgroundNodeGraph } from "@/components/ui/BackgroundNodeGraph";
+import { loadSiteConfig, loadSiteSettings } from "@/lib/settingsLoader";
 
 // HeroBrainScene is WebGL/R3F — dynamic import prevents SSR / hydration mismatch
 const HeroBrainScene = dynamic(
@@ -206,12 +207,10 @@ function HeroSection() {
   useCursorParallax(5);
 
   useEffect(() => {
-    fetch("/api/config")
-      .then((r) => r.json())
+    loadSiteConfig()
       .then((data: SiteConfig) => setConfig(data))
       .catch(() => { /* use default */ });
-    fetch("/api/site/settings")
-      .then((r) => r.json())
+    loadSiteSettings()
       .then((data: SiteSettings) => setSettings(data))
       .catch(() => { /* use default */ });
   }, []);
@@ -612,8 +611,7 @@ export default function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    fetch("/api/site/settings")
-      .then((r) => r.json())
+    loadSiteSettings()
       .then((data: SiteSettings) => setProjects(data.projects || []))
       .catch(() => {
         import("@/lib/data").then((m) => setProjects(m.projects));

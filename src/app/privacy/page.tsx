@@ -90,7 +90,7 @@ export default function PrivacyPage() {
                             If you have questions regarding this policy or the technical handling of data within the platform, please reach out via:
                         </p>
                         <p className="mono font-medium">
-                            <a href="mailto:contact@amaljithnair.com">contact@amaljithnair.com</a>
+                            <a href="mailto:amal2004t@gmail.com">amal2004t@gmail.com</a>
                         </p>
                     </section>
 

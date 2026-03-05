@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { SiteConfig } from "@/lib/types";
 import { defaultSiteConfig } from "@/lib/data";
+import { loadSiteConfig } from "@/lib/settingsLoader";
 
 export function GoldenMotionLines() {
     const pathname = usePathname();
@@ -18,8 +19,7 @@ export function GoldenMotionLines() {
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     useEffect(() => {
-        fetch("/api/config")
-            .then((r) => r.json())
+        loadSiteConfig()
             .then((data: SiteConfig) => setConfig(data))
             .catch(() => { /* use default */ });
     }, []);

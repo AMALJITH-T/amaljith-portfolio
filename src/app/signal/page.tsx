@@ -9,6 +9,7 @@ import { BackgroundGeometry } from "@/components/ui/BackgroundGeometry";
 import { Mail, Github, Linkedin } from "lucide-react";
 import { Profile, SiteConfig } from "@/lib/types";
 import { defaultProfile, defaultSiteConfig } from "@/lib/data";
+import { loadSiteConfig } from "@/lib/settingsLoader";
 
 const SPRING = { type: "spring", stiffness: 220, damping: 24 } as const;
 
@@ -223,11 +224,10 @@ export default function SignalPage() {
     const [config, setConfig] = useState<SiteConfig>(defaultSiteConfig);
     const pageRef = useRef<HTMLElement>(null);
 
-    // Load admin-controlled profile and config on mount
     useEffect(() => {
         Promise.all([
             fetch("/api/profile").then(r => r.json()),
-            fetch("/api/config").then(r => r.json())
+            loadSiteConfig()
         ])
             .then(([profileData, configData]) => {
                 if (profileData && profileData.name) setProfile(profileData);
@@ -331,15 +331,15 @@ export default function SignalPage() {
 
                             {/* Social links */}
                             <div className="flex items-center gap-6 mt-12">
-                                <a href="mailto:amaljitht@srmist.edu.in"
+                                <a href="mailto:amal2004t@gmail.com"
                                     className="text-[var(--text-dim)] hover:text-[var(--accent-gold)] transition-colors duration-400">
                                     <Mail size={15} strokeWidth={1.5} />
                                 </a>
-                                <a href="https://github.com/amaljitht" target="_blank" rel="noopener noreferrer"
+                                <a href="https://github.com/AMALJITH-T" target="_blank" rel="noopener noreferrer"
                                     className="text-[var(--text-dim)] hover:text-[var(--accent-gold)] transition-colors duration-400">
                                     <Github size={15} strokeWidth={1.5} />
                                 </a>
-                                <a href="https://linkedin.com/in/amaljitht" target="_blank" rel="noopener noreferrer"
+                                <a href="https://www.linkedin.com/in/amaljith-thadathil/" target="_blank" rel="noopener noreferrer"
                                     className="text-[var(--text-dim)] hover:text-[var(--accent-gold)] transition-colors duration-400">
                                     <Linkedin size={15} strokeWidth={1.5} />
                                 </a>
