@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Loader2, X } from "lucide-react";
 
@@ -13,6 +14,11 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement>(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Auto focus when modal opens
     useEffect(() => {
@@ -63,14 +69,14 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
         }
     };
 
-    if (!open) return null;
+    if (!open || !mounted) return null;
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md">
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md">
             {/* Click outside to close */}
             <div className="absolute inset-0" onClick={onClose} />
 
-            <div className="relative w-full max-w-[400px] bg-[#070707] border border-[var(--accent-gold)] p-8 rounded-sm shadow-[0_0_30px_rgba(212,175,55,0.15)] opacity-0 animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative w-[380px] bg-[#111] border border-[var(--accent-gold)] p-8 rounded-xl shadow-[0_0_30px_rgba(212,175,55,0.15)] animate-fade-up">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-[var(--text-dim)] hover:text-[var(--accent-gold)] transition-colors"
@@ -92,16 +98,16 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
                         <input
                             ref={inputRef}
                             type="password"
-                            placeholder="Enter Passcode..."
+                            placeholder="Admin password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             disabled={loading}
-                            className="w-full bg-transparent border-b border-[var(--border)] pb-2 pt-1 font-mono text-[0.9rem] text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:border-[var(--accent-gold)] transition-colors duration-400 disabled:opacity-50"
+                            className="w-full px-4 py-3 rounded bg-black border border-neutral-700 text-[0.9rem] text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:border-[var(--accent-gold)] transition-colors duration-400 disabled:opacity-50"
                         />
                     </div>
 
                     {error && (
-                        <p className="font-sans text-[0.7rem] tracking-wide text-red-400 bg-red-500/10 px-3 py-2 border border-red-500/20">
+                        <p className="font-sans text-[0.7rem] tracking-wide text-red-400 bg-red-500/10 px-3 py-2 border border-red-500/20 rounded">
                             {error}
                         </p>
                     )}
@@ -120,6 +126,7 @@ export function AdminLoginModal({ open, onClose }: AdminLoginModalProps) {
                     </div>
                 </form>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
