@@ -75,6 +75,10 @@ export default function RootLayout({
     url: "https://amaljithnair.com",
     jobTitle: "AI/ML Researcher",
     description: "Interdisciplinary researcher exploring AI, medical systems, and computational intelligence.",
+    affiliation: {
+      "@type": "Organization",
+      "name": "SRM Institute of Science and Technology"
+    },
     sameAs: [
       "https://github.com/AMALJITH-T",
       "https://www.linkedin.com/in/amaljith-thadathil/"
