@@ -33,7 +33,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://amaljithnair.com"),
   title: "Amaljith Nair — AI/ML Researcher",
-  description: "Interdisciplinary research exploring artificial intelligence, medical systems, and computational intelligence.",
+  description: "Exploring intelligent systems, AI reasoning, and computational research.",
   keywords: [
     "AI",
     "ML",
@@ -49,16 +49,16 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Amaljith Nair — AI/ML Researcher",
-    description: "Interdisciplinary research exploring artificial intelligence, medical systems, and computational intelligence.",
+    description: "Research in AI, machine learning systems, and computational exploration.",
     url: "https://amaljithnair.com",
     type: "website",
-    siteName: "Amaljith.com",
+    siteName: "Amaljith Nair",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Amaljith Nair — AI/ML Researcher",
-    description: "Interdisciplinary research exploring artificial intelligence, medical systems, and computational intelligence.",
+    description: "Exploring intelligent systems, AI reasoning, and computational research.",
     images: ["/og-image.jpg"],
   },
 };
