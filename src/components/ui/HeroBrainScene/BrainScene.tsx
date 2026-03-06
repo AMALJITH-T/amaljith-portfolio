@@ -220,10 +220,10 @@ void main() {
 
     // ── Color: soft gold rgb(200,170,70) ──────────────────────────────────
     // Surface: warm gold  Cortex: dimmer gold  Equations: bright white-gold
-    vec3 surfGold = vec3(1.0, 1.0, 1.0);    // "#ffffff"
-    vec3 cortGold = vec3(1.0, 1.0, 1.0);    // "#ffffff"
-    vec3 eqWhite  = vec3(1.0, 1.0, 1.0);    // "#ffffff"
-    vec3 pulseTin = vec3(1.0, 1.0, 1.0);
+    vec3 surfGold = vec3(0.784, 0.667, 0.275);    // (200,170,70)/255
+    vec3 cortGold = vec3(0.490, 0.420, 0.165);    // darker for depth sense
+    vec3 eqWhite  = vec3(0.900, 0.870, 0.680);    // brighter for legibility
+    vec3 pulseTin = vec3(0.95,  0.92,  0.80);
 
     vec3 baseCol;
     if      (aLayer < 0.5) baseCol = surfGold;
@@ -234,24 +234,17 @@ void main() {
 
     // ── Final alpha ───────────────────────────────────────────────────────
     float flicker = 0.92 + 0.08 * sin(uTime * 1.7 + aPhase * 3.8);
-    float baseA = 1.0;
-    if (aLayer < 0.5) baseA = 1.0;
-    else if (aLayer < 1.5) baseA = 0.6;
-    else baseA = 0.25;
-
+    float baseA   = (aLayer < 0.5) ? 0.55 : (aLayer < 1.5) ? 0.30 : 0.70;
     vAlpha = cull * alpha * flicker * baseA * uColorI;
     vAlpha = clamp(vAlpha, 0.0, 1.0);
 
     // ── Perspective size ──────────────────────────────────────────────────
+    // Equations at close zoom get larger for readability (up to 32px)
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
-    float baseSize = 1.0;
-    if (aLayer < 0.5) baseSize = 2.4;
-    else if (aLayer < 1.5) baseSize = 1.6;
-    else baseSize = 1.0;
-
-    float pSize = baseSize * (190.0 / -mv.z);
+    float sizeScale = (aLayer > 1.5) ? uSize * 1.35 : uSize;
+    float pSize = sizeScale * (190.0 / -mv.z);
     float maxSz = (aLayer > 1.5) ? 32.0 : 20.0;
-    gl_PointSize = clamp(pSize, max(baseSize, 1.0), maxSz);
+    gl_PointSize = clamp(pSize, 0.5, maxSz);
     vPtSize = gl_PointSize;
     gl_Position = projectionMatrix * mv;
 }
@@ -334,12 +327,12 @@ function BrainPoints({
     // const pulseStart = useRef(-30.0);
     const nextPulse = useRef(2.0);
 
-    const maxParticles = 6000;
-    const particleCount = Math.max(2000, Math.min(maxParticles, settings.brainDensity ?? 5000));
-
-    const surfN = Math.floor(particleCount * 0.30);
-    const cortN = Math.floor(particleCount * 0.40);
-    const eqN = particleCount - surfN - cortN;
+    const density = Math.max(0.4, Math.min(2.0, settings.brainDensity ?? 1.0));
+    // Rebalanced to keep total strictly under 20k instances. 
+    // Layer 1 (Cortex Shell) = surfN + cortN = ~9000. Layer 2 (Equations) = 4000.
+    const surfN = Math.round(2500 * density);
+    const cortN = Math.round(6500 * density);
+    const eqN = Math.round(16000 * density); // 4x equation density
     const glitchI = settings.glitchIntensity ?? 0.5;
     const pulseHz = settings.pulseFrequency ?? 0.25;
     const colorI = settings.colorIntensity ?? 1.0;
@@ -399,7 +392,7 @@ function BrainPoints({
     const uniforms = useMemo(() => ({
         uAtlas: { value: null as THREE.Texture | null },
         uTime: { value: 0.0 },
-        uSize: { value: 2.2 },
+        uSize: { value: 1.75 },
         uReducedMotion: { value: reducedMotion ? 1.0 : 0.0 },
         uGlitchI: { value: glitchI },
         uColorI: { value: colorI },
@@ -601,7 +594,7 @@ function NeuralGraphCore({ reducedMotion }: { reducedMotion: boolean }) {
 
         if (pointsRef.current) {
             const mat = pointsRef.current.material as THREE.PointsMaterial;
-            mat.opacity = 0.8 + Math.sin(t * 3.0) * 0.2; // glow intensity overall boost
+            mat.opacity = 0.6 + Math.sin(t * 3.0) * 0.2;
         }
     });
 
@@ -620,9 +613,9 @@ function NeuralGraphCore({ reducedMotion }: { reducedMotion: boolean }) {
             <lineSegments ref={linesRef} geometry={edges}>
                 <lineBasicMaterial
                     ref={materialRef}
-                    color="#FFD700"
+                    color="#c29b27"
                     transparent
-                    opacity={0.85}
+                    opacity={0.15}
                     blending={THREE.AdditiveBlending}
                     depthWrite={false}
                 />
@@ -655,9 +648,9 @@ function CortexLines({ reducedMotion }: { reducedMotion: boolean }) {
         <group ref={groupRef}>
             <lineSegments geometry={lines}>
                 <lineBasicMaterial
-                    color="#FFD700"
+                    color="#c29b27"
                     transparent
-                    opacity={0.85}
+                    opacity={0.25}
                     depthWrite={false}
                     blending={THREE.AdditiveBlending}
                 />

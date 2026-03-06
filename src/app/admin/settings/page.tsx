@@ -309,9 +309,9 @@ export default function SettingsAdminPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                         <div className="space-y-8">
                             <SliderRow
-                                label="Token Density (Particle Count)"
-                                value={settings.brainDensity ?? 5000}
-                                min={2000} max={6000} step={100}
+                                label="Token Density (multiplier on 2400 base count)"
+                                value={settings.brainDensity ?? 1.0}
+                                min={0.3} max={2.0} step={0.1}
                                 onChange={(v) => setSettings({ ...settings, brainDensity: v })}
                             />
                             <SliderRow
