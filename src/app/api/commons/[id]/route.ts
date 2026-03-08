@@ -1,92 +1,79 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
-import { CommonsData } from "@/lib/types";
-
-const DATA_PATH = join(process.cwd(), "data", "commons.json");
-
-function readData(): CommonsData {
-    try {
-        return JSON.parse(readFileSync(DATA_PATH, "utf-8")) as CommonsData;
-    } catch {
-        return { status: "active", threads: [] };
-    }
-}
-
-function writeData(data: CommonsData): void {
-    writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), "utf-8");
-}
+import { getThread, updateThread, deleteThread } from "@/lib/commonsStore";
+import { verifyToken } from "@/lib/auth";
 
 type Params = { params: Promise<{ id: string }> };
 
-// GET /api/commons/[id] — single thread with all replies
-export async function GET(_req: NextRequest, { params }: Params) {
+async function requireAdmin(req: NextRequest): Promise<boolean> {
+    const token = req.cookies.get("admin_session")?.value;
+    const payload = await verifyToken(token);
+    return payload !== null;
+}
+
+// GET /api/commons/[id] — single thread with all replies (non-archived only for public)
+export async function GET(req: NextRequest, { params }: Params) {
     const { id } = await params;
-    const data = readData();
-    const thread = data.threads.find((t) => t.id === id);
-    if (!thread || thread.archived) {
+    const admin = await requireAdmin(req);
+    const thread = getThread(id);
+
+    if (!thread || (!admin && thread.archived)) {
         return NextResponse.json({ error: "Thread not found." }, { status: 404 });
     }
     return NextResponse.json({ thread });
 }
 
-// PATCH /api/commons/[id] — admin: lock / pin / archive / edit
+// PATCH /api/commons/[id] — admin: lock / unlock / pin / unpin / archive / unarchive / unflag / edit
 export async function PATCH(req: NextRequest, { params }: Params) {
     const { id } = await params;
-    const isAdmin = req.headers.get("x-admin") === "1";
-    if (!isAdmin) {
+
+    if (!(await requireAdmin(req))) {
         return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
     }
 
-    const data = readData();
-    const idx = data.threads.findIndex((t) => t.id === id);
-    if (idx === -1) {
+    const thread = getThread(id);
+    if (!thread) {
         return NextResponse.json({ error: "Thread not found." }, { status: 404 });
     }
 
     const body = await req.json().catch(() => ({}));
     const { action, content } = body as { action?: string; content?: string };
 
-    const thread = data.threads[idx];
+    let patch: Partial<typeof thread> = {};
 
     switch (action) {
-        case "lock": thread.locked = true; break;
-        case "unlock": thread.locked = false; break;
-        case "pin": thread.pinned = true; break;
-        case "unpin": thread.pinned = false; break;
-        case "archive": thread.archived = true; break;
-        case "unarchive": thread.archived = false; break;
-        case "unflag": thread.flagged = false; break;
+        case "lock": patch = { locked: true }; break;
+        case "unlock": patch = { locked: false }; break;
+        case "pin": patch = { pinned: true }; break;
+        case "unpin": patch = { pinned: false }; break;
+        case "archive": patch = { archived: true }; break;
+        case "unarchive": patch = { archived: false }; break;
+        case "unflag": patch = { flagged: false }; break;
         case "edit":
-            if (content?.trim()) {
-                thread.content = content.trim().slice(0, 3000);
+            if (!content?.trim()) {
+                return NextResponse.json({ error: "Content required for edit." }, { status: 400 });
             }
+            patch = { content: content.trim().slice(0, 3000) };
             break;
         default:
             return NextResponse.json({ error: "Unknown action." }, { status: 400 });
     }
 
-    data.threads[idx] = thread;
-    writeData(data);
-    return NextResponse.json({ thread });
+    const updated = updateThread(id, patch);
+    return NextResponse.json({ success: true, thread: updated });
 }
 
 // DELETE /api/commons/[id] — admin: permanent delete
 export async function DELETE(req: NextRequest, { params }: Params) {
     const { id } = await params;
-    const isAdmin = req.headers.get("x-admin") === "1";
-    if (!isAdmin) {
+
+    if (!(await requireAdmin(req))) {
         return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
     }
 
-    const data = readData();
-    const before = data.threads.length;
-    data.threads = data.threads.filter((t) => t.id !== id);
-
-    if (data.threads.length === before) {
+    const deleted = deleteThread(id);
+    if (!deleted) {
         return NextResponse.json({ error: "Thread not found." }, { status: 404 });
     }
 
-    writeData(data);
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true });
 }
