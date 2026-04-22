@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { SiteConfig, SiteSettings, defaultSiteSettings } from "@/lib/types";
-import { defaultSiteConfig } from "@/lib/data";
+import { defaultSiteConfig, timelineData } from "@/lib/data";
 import { LabFragmentsEditor } from "@/components/ui/LabFragments";
 import { ProjectsEditor } from "@/components/ui/ProjectsEditor";
 import { TimelineEditor } from "@/components/ui/TimelineEditor";
@@ -72,7 +72,13 @@ export default function SettingsAdminPage() {
             loadSiteConfig(),
             loadSiteSettings(),
         ])
-            .then(([cfg, ss]) => { setConfig(cfg); setSettings(ss); })
+            .then(([cfg, ss]) => { 
+                setConfig(cfg); 
+                setSettings({
+                    ...ss,
+                    timeline: ss.timeline?.length ? ss.timeline : timelineData,
+                }); 
+            })
             .catch(() => { })
             .finally(() => setLoading(false));
     }, []);
