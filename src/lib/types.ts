@@ -183,6 +183,8 @@ export interface SiteSettings {
     glitchIntensity: number;     // 0.0–1.0 glitch micro-displacement intensity
     pulseFrequency: number;      // pulses per second (e.g. 0.25 = one every 4s)
     colorIntensity: number;      // 0.5–1.5 overall brightness multiplier
+    // ── Research Timeline ───────────────────────────────────────────────────
+    timeline?: TimelineEvent[];
 }
 
 export const defaultSiteSettings: SiteSettings = {
@@ -250,6 +252,7 @@ export const defaultSiteSettings: SiteSettings = {
     glitchIntensity: 0.5,
     pulseFrequency: 0.25,
     colorIntensity: 1.0,
+    timeline: [],
 };
 
 export interface TimelineEvent {

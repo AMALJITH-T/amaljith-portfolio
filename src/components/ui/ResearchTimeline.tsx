@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { timelineData } from "@/lib/data";
-import { TimelineEvent } from "@/lib/types";
+import { TimelineEvent, SiteSettings } from "@/lib/types";
+import { loadSiteSettings } from "@/lib/settingsLoader";
 
 function TimelineNode({ event, index }: { event: TimelineEvent; index: number }) {
     const ref = useRef<HTMLDivElement>(null);
@@ -137,6 +138,17 @@ export function ResearchTimeline() {
     // Top-level spine ref
     const containerRef = useRef<HTMLDivElement>(null);
     const isInView = useInView(containerRef, { once: true, margin: "-100px 0px" });
+    const [events, setEvents] = useState<TimelineEvent[]>(timelineData);
+
+    useEffect(() => {
+        loadSiteSettings()
+            .then((settings: SiteSettings) => {
+                if (settings && settings.timeline && settings.timeline.length > 0) {
+                    setEvents(settings.timeline);
+                }
+            })
+            .catch(() => {});
+    }, []);
 
     return (
         <section id="research-timeline" className="relative w-full py-24 border-t border-[var(--border)] overflow-hidden">
@@ -173,8 +185,8 @@ export function ResearchTimeline() {
 
                     {/* Timeline Nodes */}
                     <div className="relative pt-8 pb-8">
-                        {timelineData.map((evt, idx) => (
-                            <TimelineNode key={evt.title + evt.year} event={evt} index={idx} />
+                        {events.map((evt, idx) => (
+                            <TimelineNode key={evt.title + evt.year + idx} event={evt} index={idx} />
                         ))}
                     </div>
                 </div>

@@ -6,6 +6,7 @@ import { SiteConfig, SiteSettings, defaultSiteSettings } from "@/lib/types";
 import { defaultSiteConfig } from "@/lib/data";
 import { LabFragmentsEditor } from "@/components/ui/LabFragments";
 import { ProjectsEditor } from "@/components/ui/ProjectsEditor";
+import { TimelineEditor } from "@/components/ui/TimelineEditor";
 import { loadSiteConfig, loadSiteSettings } from "@/lib/settingsLoader";
 
 // ─── Shared Field Components ──────────────────────────────────────────────────
@@ -297,6 +298,18 @@ export default function SettingsAdminPage() {
                     <ProjectsEditor
                         projects={settings.projects || []}
                         onChange={(p) => setSettings({ ...settings, projects: p })}
+                    />
+                </div>
+
+                {/* ── SECTION: Research Timeline ────────────────────────────── */}
+                <div className="space-y-8 mt-12">
+                    <SectionTitle>Research Timeline</SectionTitle>
+                    <p className="font-sans text-[0.78rem] text-[var(--text-dim)] -mt-4">
+                        Manage the chronological timeline of research, experiments, and career events.
+                    </p>
+                    <TimelineEditor
+                        events={settings.timeline || []}
+                        onChange={(t) => setSettings({ ...settings, timeline: t })}
                     />
                 </div>
 
